@@ -1,4 +1,4 @@
-## Using Twitter Sentiment to Predict Stock Trends
+## Using Twitter to Predict Stock Trends
 
 ### Introduction
 
