@@ -161,23 +161,6 @@ dataFinal = tweets.merge(stocks, left_on=['date', 'ticker'], right_on=[ 'date', 
 dataFinal.head()
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -254,21 +237,6 @@ wc_total.sort_values(by='count', ascending=False).head(10)
 
 
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -348,7 +316,6 @@ sns.barplot(x='word', y='count',data=for_plot, palette='cividis')
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x19d59ba1348>
 
 
 
@@ -382,21 +349,6 @@ bic.sort_values(by='count',ascending=False).head(15)
 
 
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -495,22 +447,6 @@ pd.DataFrame(c3.items(), columns=['word','count']).sort_values(by='count', ascen
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -630,20 +566,6 @@ new.head()
 
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -720,11 +642,6 @@ sns.barplot(x='word', y='count',data=p,palette='spring')
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x19d53d90088>
-
-
-
-
 ![png](output_40_1.png)
 
 
@@ -733,11 +650,6 @@ sns.barplot(x='word', y='count',data=p,palette='spring')
 plt.figure(figsize=(12,5))
 sns.barplot(x='word', y='count',data=n, palette='winter')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x19d5c359848>
 
 
 
@@ -840,21 +752,6 @@ dataFinal.head()
 
 
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
