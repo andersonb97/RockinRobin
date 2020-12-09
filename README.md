@@ -25,9 +25,9 @@ To pull the twitter data I used a package called 'Tweepy' which has a couple of 
 * Username who tweeted
 * Location from which the tweet was made
 * Tweet timestamp
-* Searchwords
+* Search words
 
-The searchwords used to find each tweet contained the name of the company, the ticker symbol in the US stock exchange, and the modifier "-filter:retweets". The modifier "-filter:retweets" ensured that I didn't get duplicate tweets. An example searchword phrase for Tesla would be "TSLA OR Tesla -filter:retweets". The resulting data frame is then saved as a .csv file. 
+The search words used to find each tweet contained the name of the company, the ticker symbol in the US stock exchange, and the modifier "-filter:retweets". The modifier "-filter:retweets" ensured that I didn't get duplicate tweets. An example search word phrase for Tesla would be "TSLA OR Tesla -filter:retweets". The resulting data frame is then saved as a .csv file. 
 
 Full code for my Twitter data pull is provided in the Github repository: https://github.com/andersonb97/RockinRobin in the file tweetPull.ipynb. 
 
@@ -1131,7 +1131,7 @@ Answering the question of whether tweets can predict fluctuations in the stock m
 
 At the conclusion of the EDA I created sentiment features for the positive and negative sentiment contained within a tweet. Using this method and the TF-IDF features I ran semantic and sentiment analyses to classify increases or decreases in stock price. Neither of the methods produced results with a high degree of prediction accuracy. However, there is promise in the results provided by the semantic models. The semantic models slightly outperformed the accuracy of chance which leads me to conclude that given additional research and study relationships could be amplified to produce greater prediction accuracy. 
 
-One weakness of my analysis shows in the results provided by the Logistic Regression analysis. The Logisitc Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse. Had I had more time, I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the searchwords used to find tweets. I would expand the searchwords to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
+One weakness of my analysis shows in the results provided by the Logistic Regression analysis. The Logisitc Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse. Had I had more time, I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the search words used to find tweets. I would expand the search words to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
 
 There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregrate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to encorporate for predicting individual stocks.
 
