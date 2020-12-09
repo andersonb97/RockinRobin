@@ -6,7 +6,12 @@ The idea for this project started in a writing class that I took as a Senior at 
 
 The purpose of this document is to demonstrate my skills in machine learning and natural language processing. My research question is, "Can tweets about a particular company can be used to predict if that company's stock price will have increased or decreased from the innital opening price by the end of the day?"
 
-This project contains steps and information regarding my Data Collection, Cleaning, EDA, Variable Creation, and Modeling.
+This project contains steps and information regarding my analysis including:
+* Data Collection
+* Cleaning
+* EDA
+* Variable Creation
+* Modeling
 
 ### Data Collection
 
@@ -14,7 +19,13 @@ This project contains steps and information regarding my Data Collection, Cleani
 
 Twitter data can be pulled using Twitter's API which is readily available to students and for other projects. API access is granted to Twitter users who have applied for developer status. A quick description of the project is required and API keys are granted upon project approval.
 
-To pull the twitter data I used a package called 'Tweepy' which has a couple of shortcomings including that you can only pull tweets from the last week. This limited the amount of data that I was able to obtain significantly because I was limited to three week's worth of data in the time span of my project. I coded my data pull to include the most recent 10,000 for each company in the S&P 500 for a given day. My pull resulted in a Pandas data frame where each row contained a tweet, the user who tweeted, the location of the tweet, the time the tweet was published, and finally the searchwords used to find the tweet.
+To pull the twitter data I used a package called 'Tweepy' which has a couple of shortcomings including that you can only pull tweets from the last week. This limited the amount of data that I was able to obtain significantly because I was limited to three week's worth of data in the time span of my project. I coded my data pull to include the most recent 10,000 for each company in the S&P 500 for a given day. My pull resulted in a Pandas data frame where each row contained:
+
+* Tweet
+* Username who tweeted
+* Location from which the tweet was made
+* Tweet timestamp
+* Searchwords
 
 The searchwords used to find each tweet contained the name of the company, the ticker symbol in the US stock exchange, and the modifier "-filter:retweets". The modifier "-filter:retweets" ensured that I didn't get duplicate tweets. An example searchword phrase for Tesla would be "TSLA OR Tesla -filter:retweets". The resulting data frame is then saved as a .csv file. 
 
@@ -23,20 +34,17 @@ Full code for my Twitter data pull is provided in the Github repository: https:/
 #### Yahoo! Finance
 
 The financial data necessary for this project was scraped from Yahoo! Finance using the 'read_html()' function in the Pandas package. 
-A list of S&P 500 companies with their name and ticker symbol were scraped from Wikipedia URL: 
-
-"https://en.wikipedia.org/wiki/List_of_S%26P_500_companies". 
+A list of S&P 500 companies with their name and ticker symbol were scraped from Wikipedia (https://en.wikipedia.org/wiki/List_of_S%26P_500_companies). 
 
 Using the resulting ticker symbols I created a scrape using the following form to obtain recent stock data: 
 
 'https://finance.yahoo.com/quote/' + ticker + '/history?p=' + ticker 
 
-Where 'ticker' represents the ticker symbol for a company as a string.
+- where 'ticker' represents the ticker symbol for a company as a string.
 
 Using the resulting data I created two variables: delta and delta_bin. "delta" is the numeric change between opening and closing price. "delta_bin" is the categorical change in stock price, either "positive" or "negative".
 
-Full code for my Twitter data pull is provided in the Github repository: https://github.com/andersonb97/RockinRobin in the file stockPull.ipynb. 
-
+Full code for my Twitter data pull is provided in the Github repository (https://github.com/andersonb97/RockinRobin) in the file stockPull.ipynb. 
 
 #### Import Necessary Packages
 
@@ -90,7 +98,7 @@ The stock data is fairly cleaned based of the pull that I did. During the pull I
 
 ```python
 # There are some duplicates that need to be removed in the stock data.
-stocks = stocks.drop_duplicates(['ticker', 'Date'])[['ticker', 'Date', 'delta', 'delta_bin']]
+stocks = stocks.drop_duplicates(['ticker', 'Date'])[['ticker', 'Date', 'delta_bin']]
 ```
 
 
@@ -103,11 +111,11 @@ stocks = stocks.drop('Date', 1)
 
 The first step to cleaning twitter data was to rename the columns. Then I need to take out the ticker symbol and drop unnecessary columns. After this brief cleaning the next step is the clean the text of the tweets. To do this I turn the words into lowercase, split the words, and remove stopwords. The stopwords that I use come from the 'english' dictionary in the NLTK package.
 
-The final step in the twitter data cleaning is to combine the text strings for each company each day. So if 20 people tweeted about Tesla on the same day, we concatenate those strings into one string and one data observation for that day.
+The final step in the twitter data cleaning is to combine the text strings for each company each day. So if 20 people tweeted about Tesla on the same day, we concatenate those strings into one string and one data observation for Tesla that day.
 
 
 ```python
-# Rename the columns.
+# Rename the columns
 tweets.columns = ['tweet', 'user', 'location', 'date', 'retweets', 'searchwords']
 ```
 
@@ -125,7 +133,7 @@ tweets = tweets.drop_duplicates(['tweet', 'date', 'ticker'])[['tweet', 'date', '
 
 
 ```python
-# Clean the tweets to remove stopwords and symobols.
+# Clean the tweets to remove stopwords and symobols
 sw = stopwords.words('english')
 def clean_text(x):
     x = x.lower()
@@ -161,6 +169,8 @@ dataFinal = tweets.merge(stocks, left_on=['date', 'ticker'], right_on=[ 'date', 
 dataFinal.head()
 ```
 
+
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -168,7 +178,6 @@ dataFinal.head()
       <th>date</th>
       <th>ticker</th>
       <th>tweet</th>
-      <th>delta</th>
       <th>delta_bin</th>
     </tr>
   </thead>
@@ -178,7 +187,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>AAP</td>
       <td>highlights annual mobil twelve hours sebring p...</td>
-      <td>-4.44</td>
       <td>down</td>
     </tr>
     <tr>
@@ -186,7 +194,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>ANTM</td>
       <td>today released legendary anthem empowerment no...</td>
-      <td>-2.77</td>
       <td>down</td>
     </tr>
     <tr>
@@ -194,7 +201,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>BLK</td>
       <td>years ago michael jordan ridiculous line vs pt...</td>
-      <td>-6.07</td>
       <td>down</td>
     </tr>
     <tr>
@@ -202,7 +208,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>CARR</td>
       <td>south korean korean air says buy smaller troub...</td>
-      <td>1.26</td>
       <td>up</td>
     </tr>
     <tr>
@@ -210,7 +215,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>CE</td>
       <td>great post awhile ago rise nazi hippies worth ...</td>
-      <td>2.38</td>
       <td>up</td>
     </tr>
   </tbody>
@@ -225,7 +229,7 @@ My analysis focuses on two different approaches: Semantic Models and Sentiment M
 
 #### Word Counts
 
-Popular words in the tweets collected include 'new', 'walmart' and 'trump'. This realyl doesn't give us a ton of insight into the tweets other than important names and companies included in the set.
+Popular words in the tweets collected include 'new', 'walmart' and 'trump'. This really doesn't give us a ton of insight into the tweets other than important names and companies included in the set.
 
 
 ```python
@@ -234,6 +238,7 @@ c = Counter(long_content)
 wc_total = pd.DataFrame(c.items(), columns=['word', 'count'])
 wc_total.sort_values(by='count', ascending=False).head(10)
 ```
+
 
 
 
@@ -319,8 +324,7 @@ sns.barplot(x='word', y='count',data=for_plot, palette='cividis')
 
 
 
-
-![png](output_27_1.png)
+![png](output_26_1.png)
 
 
 #### Count bigrams/trigrams
@@ -346,6 +350,8 @@ bic = pd.DataFrame(c2.items(), columns=['word','count'])
 ```python
 bic.sort_values(by='count',ascending=False).head(15)
 ```
+
+
 
 
 
@@ -445,6 +451,8 @@ trigrams = ngrams(long_content, 3)
 c3 = Counter(trigrams)
 pd.DataFrame(c3.items(), columns=['word','count']).sort_values(by='count', ascending=False).head(15)
 ```
+
+
 
 
 <table border="1" class="dataframe">
@@ -642,7 +650,9 @@ sns.barplot(x='word', y='count',data=p,palette='spring')
 
 
 
-![png](output_40_1.png)
+
+
+![png](output_39_1.png)
 
 
 
@@ -654,14 +664,14 @@ sns.barplot(x='word', y='count',data=n, palette='winter')
 
 
 
-![png](output_41_1.png)
+![png](output_40_1.png)
 
 
-### Create Features
+### Feature Creation
 
-The features that I create include TF-IDF scores and Sentiment for each tweet. The TF-IDF scores are created further down when I perform my semantic analyses. However, the sentiments I generate here. I generate two columns containing the positive percentage of words in the tweet and the negative percentage of words in the tweet. 
+The features that I create include TF-IDF scores and Sentiment for each tweet. The TF-IDF scores are created further down when I perform my semantic analyses. However, I generate the sentiment here. I generate two columns containing the positive percentage of words in the tweet and the negative percentage of words in the tweet. 
 
-To generate positive and negative sentiment for each tweet I tokenize the words in each tweet, I then lammentize the words before a sentiment is created. Using the lammentized words the percentage of positive words in the tweet are calculated and the percentage of negative words in the tweet are calculated. These two proportions are added into the dataset as 'sent_pos' as 'sent_neg'.
+To generate positive and negative sentiment for each tweet I tokenize the words in each tweet, I then lemmentize the words before a sentiment is created. Using the lemmentized words the percentage of positive words in the tweet are calculated and the percentage of negative words in the tweet are calculated. These two proportions are added into the dataset as 'sent_pos' as 'sent_neg'.
 
 #### Generate Sentiment for each Tweet
 
@@ -752,6 +762,7 @@ dataFinal.head()
 
 
 
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -759,7 +770,6 @@ dataFinal.head()
       <th>date</th>
       <th>ticker</th>
       <th>tweet</th>
-      <th>delta</th>
       <th>delta_bin</th>
       <th>sent_pos</th>
       <th>sent_neg</th>
@@ -771,7 +781,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>AAP</td>
       <td>highlights annual mobil twelve hours sebring p...</td>
-      <td>-4.44</td>
       <td>down</td>
       <td>0.000000</td>
       <td>0.000000</td>
@@ -781,7 +790,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>ANTM</td>
       <td>today released legendary anthem empowerment no...</td>
-      <td>-2.77</td>
       <td>down</td>
       <td>0.014085</td>
       <td>0.014085</td>
@@ -791,7 +799,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>BLK</td>
       <td>years ago michael jordan ridiculous line vs pt...</td>
-      <td>-6.07</td>
       <td>down</td>
       <td>0.000000</td>
       <td>0.074074</td>
@@ -801,7 +808,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>CARR</td>
       <td>south korean korean air says buy smaller troub...</td>
-      <td>1.26</td>
       <td>up</td>
       <td>0.000000</td>
       <td>0.125000</td>
@@ -811,7 +817,6 @@ dataFinal.head()
       <td>2020-11-16</td>
       <td>CE</td>
       <td>great post awhile ago rise nazi hippies worth ...</td>
-      <td>2.38</td>
       <td>up</td>
       <td>0.041667</td>
       <td>0.041667</td>
@@ -824,9 +829,11 @@ dataFinal.head()
 
 ## Methods & Results
 
+I selected semantic and sentiment approaches because they are the two most common approaches to natural languge processing that have been discussed on literature regarding the topic. 
+
 ### Semantic Model Approach
 
-A semantic model approach takes into account the frequency of the words used as a proportion of the words in a tweet and in the dataset. A popular way of doing this is using TF-IDF scores. TF-IDF stands for "total frequency-inverse document frequency". Each word in the dataset is assigned a value calculated based on how often it is used and it becomes a factor that can be modeled on.
+A semantic model approach takes into account the frequency of the words used as a proportion of the words in a tweet and in the dataset. A popular way of doing this is using TF-IDF scores. TF-IDF stands for "total frequency-inverse document frequency". Each word in the dataset is assigned a value, calculated based on how often it is used.
 
 First I break the data into testing and training datasets. I use a 70/30 training test split stratified on the categorical change in the price of that stock for that day. I generate TF-IDF scores using the TfidfVectorizer function in the sklearn package in Python. 
 
@@ -970,9 +977,9 @@ precision_score(y_test, yhat)
 
 ### Sentiment Analysis Approach
 
-Using the sentiments created in the Create Features section, I perform two different analyses using a Logistic Regression approach and a Random Forest Classifier. 
+Using the sentiments created in the Feature Creation section, I perform two different analyses using a Logistic Regression approach and a Random Forest Classifier. 
 
-Again I break my data into a 70/30 train test split stratified on binary increases or decreases in stock price classification. The Logistic Regression apporach was unsuccessful in it's classification becasue it only predicted increases in stock market price. This resulted in an accuracy of 0.52 and an F1 Score of 0.69 percent. The reason I chose to use a logistic regression model is because it is one of the most basic models and I thought that it might perform well because there aren't very many explanatory variables to deal with. Logistic Regression requires a large amount of data which is one weakness. The Random Forest predicted an accuracy just at the accuracy of chance classification with an accuracy of 0.49 and an F1 Score of 0.58. I chose to use the Random Forest because it performed well in the semantic analysis and because it generally performs well. The weakensses of the Random Forest are outlined above.
+Again I break my data into a 70/30 train test split stratified on binary increases or decreases in stock price changes for that company on a given day. The Logistic Regression apporach was unsuccessful in it's classification becasue it only predicted increases in stock market price. This resulted in an accuracy of 0.52 and an F1 Score of 0.69 percent. The reason I chose to use a logistic regression model is because it is one of the most basic models for classification and I thought that it might perform well because there aren't very many explanatory variables to deal with. However, Logistic Regression requires a large amount of data which I do not have and that is one weakness of the model. The Random Forest predicted an accuracy of 0.49, just at the accuracy of chance classification, and an F1 Score of 0.58. I chose to use the Random Forest because it performed well in the semantic analysis and because it generally performs well. The weakensses of the Random Forest are outlined above.
 
 
 ```python
@@ -1104,7 +1111,7 @@ precision_score(y_test, yhat)
 
 ### Explaination and Results
 
-The steps that I took to improve my predictions can be seen in three different aspects of this report. First, cleaning the text was an important step. I removed unwanted and insignificant words as well as lammentized the words so that the TF-IDF and sentiment metrics would give more accurate insight into the data. Then I tried a semantic approach and a sentiment approach. Within each of these approaches, I tried two different machine learning models. In addition, I tried a ensemble method (not included in this write up) that did not out-perform either method. The Random Forest outperformed my first attempt in both semantic and sentiment approaches. While none of the models performed well, there is promise that natural language processing of tweets can predict the change in the stock price of a company. 
+The steps that I took to improve my predictions can be seen in three different aspects of this report. First, cleaning the text was an important step. I removed unwanted and insignificant words as well as lemmentized the words so that the TF-IDF and sentiment metrics would give more accurate insight into the data. Then I tried a semantic approach and a sentiment approach. Within each of these approaches, I tried two different machine learning models. In addition, I tried a ensemble method (not included in this write up) that did not out-perform either method. The Random Forest outperformed my first attempt in both semantic and sentiment approaches. While none of the models performed well, there is promise that natural language processing of tweets can predict the change in the stock price of a company. 
 
 The model performance metrics that I chose to use were Accuracy, F1 Score, and Precision. 
 
@@ -1114,7 +1121,7 @@ The model performance metrics that I chose to use were Accuracy, F1 Score, and P
 
 I chose these methods because they are standard across the machine learning industry and give a good view of the strengths and weaknesses of the model.
 
-The methods and models that I tried do not predict with a high degree of accuracy the closing price of specific stocks. However, as a general trend the semantic methods outperformed the sentiment methods. Of the two semantic methods the Random Forest model performed the best. The semantic models both performed slighly better than chance and indicate that there could be a relationship between tweets and stock performance. The sentiment models on the other hand did not perform well. In fact, the Random Forest did not perform any better than chance based off it's accuracy metric. The Logistic Regression method did not perform well at all. While it's F1 Score is high, the confusion matrix indicates that the model always predicted an increase in stock price. This is not a viable way to perform an analysis and is not good for long term prediction. 
+The methods and models that I tried do not predict the closing price of specific stocks well. However, as a general trend the semantic methods outperformed the sentiment methods. Of the two semantic methods the Random Forest model performed the best. The semantic models both performed slighly better than chance and indicate that there could be a relationship between tweets and stock performance. The sentiment models on the other hand did not perform well. In fact, the Random Forest did not perform any better than chance based off it's accuracy metric. The Logistic Regression method did not perform well, while it's F1 Score is high, the confusion matrix indicates that the model always predicted an increase in stock price. This is not a viable way to perform an analysis and is not good for long term prediction. 
 
 #### Based off the results of the semantic analyses, tweets can be used to predict changes in stock price. However, futher research with more data should be considered to draw a more conclusive result.
 
@@ -1124,11 +1131,7 @@ Answering the question of whether tweets can predict fluctuations in the stock m
 
 At the conclusion of the EDA I created sentiment features for the positive and negative sentiment contained within a tweet. Using this method and the TF-IDF features I ran semantic and sentiment analyses to classify increases or decreases in stock price. Neither of the methods produced results with a high degree of prediction accuracy. However, there is promise in the results provided by the semantic models. The semantic models slightly outperformed the accuracy of chance which leads me to conclude that given additional research and study relationships could be amplified to produce greater prediction accuracy. 
 
-One weakness of my analysis shows in the results provided by the Logistic Regression analysis that I performed. The Logisitc Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse and had I had more time I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the searchwords used to find tweets. I would expand the searchwords to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
+One weakness of my analysis shows in the results provided by the Logistic Regression analysis. The Logisitc Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse. Had I had more time, I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the searchwords used to find tweets. I would expand the searchwords to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
 
-There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregrate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to encorporate for predicting individual stocks. 
+There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregrate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to encorporate for predicting individual stocks.
 
-
-```python
-
-```
