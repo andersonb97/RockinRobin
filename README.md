@@ -1,10 +1,10 @@
-## Using Twitter to Predict Stock Trends
+## Using Twitter Sentiment to Predict Stock Trends
 
 ### Introduction
 
-The idea for this project started in a writing class that I took as a Senior at Brigham Young University. The assignment was to write a 10-page literature review regarding a subject that we were interested in. I love to watch my Robinhood account go up and down with the stock market and after learning so much about machine learning I thought there must be some way to predict the stock market. I began to research different methods of machine learning in stock prediction and surprisingly there were several articles about using natural language processing to predict stock fluctuations. One of their primary data sources was Twitter. I thought that it would be interesting to try out my new knowledge in machine learning and NLP to perform an analysis similar to the ones that I had been reading. The literature review that I wrote can be found in the https://github.com/andersonb97/RockinRobin repository if you would like to read more regarding my findings.
+The idea for this project started in a writing class that I took as a Senior at Brigham Young University. The assignment was to write a 10 page literature review regarding a subject that we were interested in. I love to watch my Robinhood account go up and down with the stock market and after learning so much about machine learning I thought there must be some way to predict the stock market. I began to research different methods of machine learning in stock prediction and surprisingly there were several articles using natural language processing to predict stock fluctuations. One of their primary sources was Twitter. I thought that it would be interesting to try out my new knowledge in machine learning and NLP to perform an analysis similar to the ones that I had been reading. The literature review that I wrote can be found in the https://github.com/andersonb97/RockinRobin repository if you would like to read more regarding my findings.
 
-The purpose of this document is to demonstrate my skills in machine learning and natural language processing. My research question is, "Can tweets be used to predict individual stock price changes?"
+The purpose of this document is to demonstrate my skills in machine learning and natural language processing. My research question is, "Can tweets about a particular company can be used to predict if that company's stock price will have increased or decreased from the innital opening price by the end of the day?"
 
 This project contains steps and information regarding my analysis including:
 * Data Collection
@@ -93,7 +93,7 @@ tweets = pd.concat([pd.read_csv(file) for file in [i for i in onlyfiles if 'twee
 
 #### Clean Stocks Data
 
-The stock data is fairly cleaned based of the pull that I did. During the pull I removed any rows containing strings (stock splits). However, there are some duplicates in the data so it is necessary for me to remove duplicates. In addition, I change the date into a format consistent with the date data that I collected from Twitter.
+The stock data is fairly cleaned based of the pull that I did. During the pull I removed any rows containing strings (stock splits). However, there are some duplicates in the data so it is necessary for me to remove duplicates. In addition, I change the date into a format consistent with the date data that I collected from Twitter
 
 
 ```python
@@ -109,7 +109,7 @@ stocks = stocks.drop('Date', 1)
 
 #### Clean Twitter Data
 
-The first step to cleaning twitter data was to rename the columns. Then I need to take out the ticker symbol and drop unnecessary columns. After this brief cleaning the next step is the clean the text of the tweets. To do this I turn the words into lowercase, split the words, and remove stop words. The stop words that I use come from the 'english' dictionary in the NLTK package.
+The first step to cleaning twitter data was to rename the columns. Then I need to take out the ticker symbol and drop unnecessary columns. After this brief cleaning the next step is the clean the text of the tweets. To do this I turn the words into lowercase, split the words, and remove stopwords. The stopwords that I use come from the 'english' dictionary in the NLTK package.
 
 The final step in the twitter data cleaning is to combine the text strings for each company each day. So if 20 people tweeted about Tesla on the same day, we concatenate those strings into one string and one data observation for Tesla that day.
 
@@ -171,7 +171,6 @@ dataFinal.head()
 
 
 
-
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -228,7 +227,6 @@ dataFinal.head()
 
 My analysis focuses on two different approaches: Semantic Models and Sentiment Models. This is something that is discussed in the literature review I attached. Because I focus on Semantic and Sentiment models I look into two different points in my exploratory data analysis. For semantic analysis EDA, I look at word counts within the tweets along with bigrams and trigrams. For sentiment analysis, I look more into the sentiment behind the tweets in general regarding the stock market. 
 
-
 #### Word Counts
 
 Popular words in the tweets collected include 'new', 'walmart' and 'trump'. This really doesn't give us a ton of insight into the tweets other than important names and companies included in the set.
@@ -240,6 +238,7 @@ c = Counter(long_content)
 wc_total = pd.DataFrame(c.items(), columns=['word', 'count'])
 wc_total.sort_values(by='count', ascending=False).head(10)
 ```
+
 
 
 
@@ -323,6 +322,8 @@ sns.barplot(x='word', y='count',data=for_plot, palette='cividis')
 
 
 
+
+
 ![png](output_26_1.png)
 
 
@@ -349,6 +350,7 @@ bic = pd.DataFrame(c2.items(), columns=['word','count'])
 ```python
 bic.sort_values(by='count',ascending=False).head(15)
 ```
+
 
 
 
@@ -449,6 +451,7 @@ trigrams = ngrams(long_content, 3)
 c3 = Counter(trigrams)
 pd.DataFrame(c3.items(), columns=['word','count']).sort_values(by='count', ascending=False).head(15)
 ```
+
 
 
 
@@ -647,6 +650,8 @@ sns.barplot(x='word', y='count',data=p,palette='spring')
 
 
 
+
+
 ![png](output_39_1.png)
 
 
@@ -666,7 +671,7 @@ sns.barplot(x='word', y='count',data=n, palette='winter')
 
 The features that I create include TF-IDF scores and Sentiment for each tweet. The TF-IDF scores are created further down when I perform my semantic analyses. However, I generate the sentiment here. I generate two columns containing the positive percentage of words in the tweet and the negative percentage of words in the tweet. 
 
-To generate positive and negative sentiment for each tweet I tokenize the words in each tweet, I then lemmatize the words before a sentiment is created. Using the lemmatized words the percentage of positive words in the tweet are calculated and the percentage of negative words in the tweet are calculated. These two proportions are added into the dataset as 'sent_pos' as 'sent_neg'.
+To generate positive and negative sentiment for each tweet I tokenize the words in each tweet, I then lemmentize the words before a sentiment is created. Using the lemmentized words the percentage of positive words in the tweet are calculated and the percentage of negative words in the tweet are calculated. These two proportions are added into the dataset as 'sent_pos' as 'sent_neg'.
 
 #### Generate Sentiment for each Tweet
 
@@ -832,11 +837,7 @@ A semantic model approach takes into account the frequency of the words used as 
 
 First I break the data into testing and training datasets. I use a 70/30 training test split stratified on the categorical change in the price of that stock for that day. I generate TF-IDF scores using the TfidfVectorizer function in the sklearn package in Python. 
 
-<<<<<<< HEAD
-Once the TF-IDF scores have been calculated I try classification using a Multinomial Naive Bayes classifier and a Random Forest Classifier. The Multinomial Naive Bayes is a good method for text classificaiton and results in an accuracy of 0.53 and an F1 Score of 0.61. The reason that I selected the Multinomial Naive Bayes estimator is because it doesn't require much training data and is relatively quick compared to other classifiers. It could be used to make almost real time stock market predictions. Unfortunately, one of the main limitations of the Multinomial Naive Bayes classifier is it makes the simplifying assumption that there is no relationship between variables. The results from the Multinomial Naive Bayes estimator are very similar to the results obtained using the Random Forest classifier which produces an accuracy of 0.55 and an F1 score of 0.65. The reason I chose to use a Random Forest is because it has historically handled classification problems very well. This is because it relies on multiple iterations and decision trees to get the most accurate prediction. The Random Forest model does have weaknesses, including that they are not very interpretable and tend to overfit. However, based on the confusion matrix it seems there is no evidence of overfitting.
-=======
-Once the TF-IDF scores have been calculated I try classification using a Multinomial Naive Bayes classifier and a Random Forest Classifier. The Multinomial Naive Bayes is a good method for text classificaiton and results in an accuracy of 0.53 and an F1 Score of 0.63. The reason that I selected the Multinomial Naive Bayes estimator is because it doesn't require much training data and is relatively quick compared to other classifiers. It could be used to make almost real time stock market predictions. Unfortunately, one of the main limitations of the Multinomial Naive Bayes classifier is it makes the simplifying assumption that there is no relationship between variables. The results from the Multinomial Naive Bayes estimator are very similar to the results obtained using the Random Forest classifier which produces an accuracy of 0.56 and an F1 score of 0.64. The reason I chose to use a Random Forest is because it has historically handled classification problems very well. This is because it relies on multiple iterations and decision trees to get the most accurate prediction. The Random Forest model does have weaknesses, including that they are not very interpretable and tend to overfit. However, based on the confusion matrix it seems there is no evidence of overfitting.
->>>>>>> fcb7daebc3388daada4fd8ea01001d1644c8a408
+Once the TF-IDF scores have been calculated I try classification using a Multinomial Naive Bayes classifier and a Random Forest Classifier. The Multinomial Naive Bayes is a good method for text classificaiton and results in an accuracy of 0.53 and an F1 Score of 0.63. The reason that I selected the Multinomial Naive Bayes estimator is because it doesn't require much training data and is relatively quick compared to other classifiers. It could be used to make almost real time stock market predictions. Unfortunately, one of the main limitations of the Multinomial Naive Bayes classifier is it makes the simplifiying assumption that there is no relationship between variables. The results from the Multinomial Naive Bayes estimator are very similar to the results obtained using the Random Forest classifier which produces an accuracy of 0.56 and an F1 score of 0.64. The reason I chose to use a Random Forest is because it has historically handled classification problems very well. This is because it relies on multiple iterations and decision trees to get the most accurate prediction. The Random Forest model does have weaknesses, including that they are not very interpretable and tend to overfit. However, based on the confusion matrix it seems there is no evidence of overfitting.
 
 
 ```python
@@ -933,8 +934,8 @@ confusion_matrix(y_test, yhat)
 
 
 
-    array([[23, 63],
-           [19, 76]], dtype=int64)
+    array([[30, 56],
+           [24, 71]], dtype=int64)
 
 
 
@@ -946,7 +947,7 @@ accuracy_score(y_test, yhat)
 
 
 
-    0.5469613259668509
+    0.5580110497237569
 
 
 
@@ -958,7 +959,7 @@ f1_score(y_test, yhat)
 
 
 
-    0.6495726495726496
+    0.6396396396396397
 
 
 
@@ -970,7 +971,7 @@ precision_score(y_test, yhat)
 
 
 
-    0.5467625899280576
+    0.5590551181102362
 
 
 
@@ -978,11 +979,7 @@ precision_score(y_test, yhat)
 
 Using the sentiments created in the Feature Creation section, I perform two different analyses using a Logistic Regression approach and a Random Forest Classifier. 
 
-<<<<<<< HEAD
-Again, I break my data into a 70/30 train test split stratified on binary increases or decreases in stock price changes for that company on a given day. The Logistic Regression approach was unsuccessful in its classification because it only predicted increases in stock market price. This resulted in an accuracy of 0.52 and an F1 Score of 0.69 percent. The reason I chose to use a logistic regression model is because it is one of the most basic models for classification and I thought that it might perform well because there aren't very many explanatory variables to deal with. However, Logistic Regression requires a large amount of data which I do not have and that is one weakness of the model. The Random Forest predicted an accuracy of 0.49, just at the accuracy of chance classification, and an F1 Score of 0.59. I chose to use the Random Forest because it performed well in the semantic analysis and because it generally performs well. The weaknesses of the Random Forest are outlined above.
-=======
-Again, I break my data into a 70/30 train test split stratified on binary increases or decreases in stock price changes for that company on a given day. The Logistic Regression approach was unsuccessful in its classification because it only predicted increases in stock market price. This resulted in an accuracy of 0.52 and an F1 Score of 0.69 percent. The reason I chose to use a logistic regression model is because it is one of the most basic models for classification and I thought that it might perform well because there aren't very many explanatory variables to deal with. However, Logistic Regression requires a large amount of data which I do not have and that is one weakness of the model. The Random Forest predicted an accuracy of 0.49, just at the accuracy of chance classification, and an F1 Score of 0.58. I chose to use the Random Forest because it performed well in the semantic analysis and because it generally performs well. The weaknesses of the Random Forest are outlined above.
->>>>>>> fcb7daebc3388daada4fd8ea01001d1644c8a408
+Again I break my data into a 70/30 train test split stratified on binary increases or decreases in stock price changes for that company on a given day. The Logistic Regression apporach was unsuccessful in it's classification becasue it only predicted increases in stock market price. This resulted in an accuracy of 0.52 and an F1 Score of 0.69 percent. The reason I chose to use a logistic regression model is because it is one of the most basic models for classification and I thought that it might perform well because there aren't very many explanatory variables to deal with. However, Logistic Regression requires a large amount of data which I do not have and that is one weakness of the model. The Random Forest predicted an accuracy of 0.49, just at the accuracy of chance classification, and an F1 Score of 0.58. I chose to use the Random Forest because it performed well in the semantic analysis and because it generally performs well. The weakensses of the Random Forest are outlined above.
 
 
 ```python
@@ -1071,8 +1068,8 @@ confusion_matrix(y_test, yhat)
 
 
 
-    array([[19, 67],
-           [28, 67]], dtype=int64)
+    array([[24, 62],
+           [30, 65]], dtype=int64)
 
 
 
@@ -1084,7 +1081,7 @@ accuracy_score(y_test, yhat)
 
 
 
-    0.47513812154696133
+    0.49171270718232046
 
 
 
@@ -1096,7 +1093,7 @@ f1_score(y_test, yhat)
 
 
 
-    0.5851528384279476
+    0.5855855855855856
 
 
 
@@ -1108,13 +1105,13 @@ precision_score(y_test, yhat)
 
 
 
-    0.5
+    0.5118110236220472
 
 
 
 ### Explaination and Results
 
-The steps that I took to improve my predictions can be seen in three different aspects of this report. First, cleaning the text was an important step. I removed unwanted and insignificant words as well as lemmatized the words so that the TF-IDF and sentiment metrics would give more accurate insight into the data. Then I tried a semantic approach and a sentiment approach. Within each of these approaches, I tried two different machine learning models. In addition, I tried an ensemble method (not included in this write up) that did not out-perform either method. The Random Forest outperformed my first attempt in both semantic and sentiment approaches. While none of the models performed well, there is promise that natural language processing of tweets can predict the change in the stock price of a company. 
+The steps that I took to improve my predictions can be seen in three different aspects of this report. First, cleaning the text was an important step. I removed unwanted and insignificant words as well as lemmentized the words so that the TF-IDF and sentiment metrics would give more accurate insight into the data. Then I tried a semantic approach and a sentiment approach. Within each of these approaches, I tried two different machine learning models. In addition, I tried a ensemble method (not included in this write up) that did not out-perform either method. The Random Forest outperformed my first attempt in both semantic and sentiment approaches. While none of the models performed well, there is promise that natural language processing of tweets can predict the change in the stock price of a company. 
 
 The model performance metrics that I chose to use were Accuracy, F1 Score, and Precision. 
 
@@ -1124,9 +1121,9 @@ The model performance metrics that I chose to use were Accuracy, F1 Score, and P
 
 I chose these methods because they are standard across the machine learning industry and give a good view of the strengths and weaknesses of the model.
 
-The methods and models that I tried do not predict the closing price of specific stocks well. However, as a general trend the semantic methods outperformed the sentiment methods. Of the two semantic methods the Random Forest model performed the best. The semantic models both performed slightly better than chance and indicate that there could be a relationship between tweets and stock performance. The sentiment models on the other hand did not perform well. In fact, the Random Forest did not perform any better than chance based off its accuracy metric. The Logistic Regression method did not perform well, while it's F1 Score is high, the confusion matrix indicates that the model always predicted an increase in stock price. This is not a viable way to perform an analysis and is not good for long term prediction. 
+The methods and models that I tried do not predict the closing price of specific stocks well. However, as a general trend the semantic methods outperformed the sentiment methods. Of the two semantic methods the Random Forest model performed the best. The semantic models both performed slighly better than chance and indicate that there could be a relationship between tweets and stock performance. The sentiment models on the other hand did not perform well. In fact, the Random Forest did not perform any better than chance based off it's accuracy metric. The Logistic Regression method did not perform well, while it's F1 Score is high, the confusion matrix indicates that the model always predicted an increase in stock price. This is not a viable way to perform an analysis and is not good for long term prediction. 
 
-#### Using semantic analysis, tweets can be used to predict changes in stock price. However, further research with more data should be considered to draw a more conclusive result.
+#### Based off the results of the semantic analyses, tweets can be used to predict changes in stock price. However, futher research with more data should be considered to draw a more conclusive result.
 
 ## Conclusion
 
@@ -1134,11 +1131,7 @@ Answering the question of whether tweets can predict fluctuations in the stock m
 
 At the conclusion of the EDA I created sentiment features for the positive and negative sentiment contained within a tweet. Using this method and the TF-IDF features I ran semantic and sentiment analyses to classify increases or decreases in stock price. Neither of the methods produced results with a high degree of prediction accuracy. However, there is promise in the results provided by the semantic models. The semantic models slightly outperformed the accuracy of chance which leads me to conclude that given additional research and study relationships could be amplified to produce greater prediction accuracy. 
 
-One weakness of my analysis shows in the results provided by the Logistic Regression analysis. The Logistic Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse. Had I had more time, I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the search words used to find tweets. I would expand the search words to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
-<<<<<<< HEAD
-=======
+One weakness of my analysis shows in the results provided by the Logistic Regression analysis. The Logisitc Regression predicted only increases. This is likely due to the relatively small size of the dataset. Given the limited time to pull tweets (3 weeks) the data was sparse. Had I had more time, I would have pulled more tweets from subsequent weeks to increase the amount of data and hopefully the accuracy of the model. I think that one source of bias that I would fix given more time would be improving the search words used to find tweets. I would expand the search words to include names of company executives as well as other ways of referring to a company (ex. Apple instead of Apple Inc.). 
 
-There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to incorporate for predicting individual stocks.
->>>>>>> fcb7daebc3388daada4fd8ea01001d1644c8a408
+There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregrate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to encorporate for predicting individual stocks.
 
-There are lots of fields of research that could be explored on this topic. However, one of particular interest to me is adding general public mood to the analysis. In the literature review file that I have attached I discuss how sentiment models perform well when predicting the aggregate rise and fall of the stock market. This general mood could be added in as a feature to this model in addition TF-IDF scores. There are many reasons why someone invests or sells and knowing the general mood of the public could add to the predictability of these models. In addition, current events have also been proven a good indicator of aggregate stock market changes and could be an interesting factor to incorporate for predicting individual stocks.
